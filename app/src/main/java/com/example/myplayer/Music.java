@@ -9,22 +9,24 @@ public class Music {
     public static String artist;
     public static int length;
     public static String path;
+    public static int currIndex;
     public static int size;
 
     public static MediaPlayer mediaPlayer = new MediaPlayer();
 
     public static boolean sSwitch = false;
 
-    public static void InitMusic(String t,String a,int l,String local){
+    public static void InitMusic(String t,String a,int l ,String local, int curr){
         title = t;
         if(a==null){
-            a = "未知艺术家";
+            artist = "未知艺术家";
         }
         else{
-            a = artist;
+            artist = a;
         }
         length = l;
         path = local;
+        currIndex = curr;
         try{
             mediaPlayer.reset();
             mediaPlayer.setDataSource(path);

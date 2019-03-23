@@ -25,7 +25,7 @@ public class ListActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private ListView listView;
     private SimpleAdapter simpleAdapter;
-    private List<Map<String, Object>> data;
+//    public static List<Map<String, Object>> data;
 
 
     @Override
@@ -38,10 +38,10 @@ public class ListActivity extends AppCompatActivity implements AdapterView.OnIte
 
         listView = findViewById(R.id.my_list);
 
-        getMusic();
+//        getMusic();
 
-        if(!data.isEmpty()){
-            simpleAdapter = new SimpleAdapter(ListActivity.this, data, R.layout.list_item,
+        if(!MainActivity.data.isEmpty()){
+            simpleAdapter = new SimpleAdapter(ListActivity.this, MainActivity.data, R.layout.list_item,
                     new String[]{"thumb", "music", "artist", "time"}, new int[] {R.id.thumb, R.id.music
                     ,R.id.artist,R.id.total_time});
 
@@ -56,49 +56,47 @@ public class ListActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         // TODO Auto-generated method stub
         try {
-            String local = data.get(position).get("path").toString();
-            String title = data.get(position).get("music").toString();
-            String artist = data.get(position).get("artist").toString();
-            int length = Integer.parseInt(data.get(position).get("time").toString());
-            Log.d("0",local);
-            Music.InitMusic(title,artist,length,local);
+            String local = MainActivity.data.get(position).get("path").toString();
+            String title = MainActivity.data.get(position).get("music").toString();
+            String artist = MainActivity.data.get(position).get("artist").toString();
+            int length = Integer.parseInt(MainActivity.data.get(position).get("time").toString());
+            Music.InitMusic(title,artist,length,local,position);
             Music.sSwitch = true;
             Music.PlayMusic();
         }
         catch (Exception e){
             e.printStackTrace();
-            Toast.makeText(this, "无法播放音频",
-                Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "无法播放音频", Toast.LENGTH_SHORT).show();
         }
 
     }
 
 
 
-    private void getMusic(){
-        data = new ArrayList<>();
-        ContentResolver resolver = getApplicationContext().getContentResolver();
-        //内容提供者访问MediaStore.Audio.Media.EXTERNAL_CONTENT_URI 这个地址获取系统音乐文件详细信息。
-        Cursor c = resolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null, null, null, null);
-        c.moveToFirst();
-        while (c.moveToNext())
-        {
-            String title = c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE));
-            String artist = c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST));
-            String path = c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA));
-            int length = c.getInt(c.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION));
-            int size = c.getInt(c.getColumnIndexOrThrow(MediaStore.Audio.Media.SIZE));
-            Map<String, Object> map = new HashMap<>();
-            map.put("thumb", R.drawable.playbtn);
-            map.put("music", title);
-            map.put("artist", artist);
-            map.put("path", path);
-            map.put("time", length);
-            map.put("size", size);
-            data.add(map);
-        }
-        c.close();
-    }
+//    public void getMusic(){
+//        data = new ArrayList<>();
+//        ContentResolver resolver = getApplicationContext().getContentResolver();
+//        //内容提供者访问MediaStore.Audio.Media.EXTERNAL_CONTENT_URI 这个地址获取系统音乐文件详细信息。
+//        Cursor c = resolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null, null, null, null);
+//        c.moveToFirst();
+//        while (c.moveToNext())
+//        {
+//            String title = c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE));
+//            String artist = c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST));
+//            String path = c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA));
+//            int length = c.getInt(c.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION));
+//            int size = c.getInt(c.getColumnIndexOrThrow(MediaStore.Audio.Media.SIZE));
+//            Map<String, Object> map = new HashMap<>();
+//            map.put("thumb", R.drawable.playbtn);
+//            map.put("music", title);
+//            map.put("artist", artist);
+//            map.put("path", path);
+//            map.put("time", length);
+//            map.put("size", size);
+//            data.add(map);
+//        }
+//        c.close();
+//    }
 
 
 
