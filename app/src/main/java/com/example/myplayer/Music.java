@@ -1,26 +1,33 @@
 package com.example.myplayer;
 
-import android.content.Context;
-import android.graphics.Bitmap;
+
 import android.media.MediaPlayer;
-import android.provider.MediaStore;
 
 public class Music {
 
-    public String title;
-    public String artist;
-    public int length;
-    public String path;
-    public int size;
+    public static String title;
+    public static String artist;
+    public static int length;
+    public static String path;
+    public static int size;
 
     public static MediaPlayer mediaPlayer = new MediaPlayer();
 
     public static boolean sSwitch = false;
 
-    public static void InitMusic(String local){
+    public static void InitMusic(String t,String a,int l,String local){
+        title = t;
+        if(a==null){
+            a = "未知艺术家";
+        }
+        else{
+            a = artist;
+        }
+        length = l;
+        path = local;
         try{
             mediaPlayer.reset();
-            mediaPlayer.setDataSource(local);
+            mediaPlayer.setDataSource(path);
             mediaPlayer.prepare();
         }
         catch (Exception e){

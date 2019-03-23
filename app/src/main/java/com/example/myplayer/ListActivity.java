@@ -26,9 +26,6 @@ public class ListActivity extends AppCompatActivity implements AdapterView.OnIte
     private ListView listView;
     private SimpleAdapter simpleAdapter;
     private List<Map<String, Object>> data;
-    private List<Music> musicList;
-
-
 
 
     @Override
@@ -60,9 +57,12 @@ public class ListActivity extends AppCompatActivity implements AdapterView.OnIte
         // TODO Auto-generated method stub
         try {
             String local = data.get(position).get("path").toString();
-
+            String title = data.get(position).get("music").toString();
+            String artist = data.get(position).get("artist").toString();
+            int length = Integer.parseInt(data.get(position).get("time").toString());
             Log.d("0",local);
-            Music.InitMusic(local);
+            Music.InitMusic(title,artist,length,local);
+            Music.sSwitch = true;
             Music.PlayMusic();
         }
         catch (Exception e){

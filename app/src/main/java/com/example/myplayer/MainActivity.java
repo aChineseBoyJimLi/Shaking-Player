@@ -20,9 +20,15 @@ public class MainActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
 
-        Music.InitMusic("/storage/emulated/0/Download/lisiwushouqisi.mp3");
-        Music.PlayMusic();
-        Music.PauseMusic();
+        Music.InitMusic("离思五首其四",null,1235,"/storage/emulated/0/Download/lisiwushouqisi.mp3");
+        Music.sSwitch = false;
+        CheckPlayStatus();
+    }
+
+    @Override
+    protected void onResume(){
+        CheckPlayStatus();
+        super.onResume();
     }
 
     @Override
@@ -32,16 +38,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void PlayMusic(View view){
+        if(Music.sSwitch){
+            Music.sSwitch = false;
+            CheckPlayStatus();
+        }
+        else{
+            Music.sSwitch = true;
+            CheckPlayStatus();
+        }
+    }
+
+    public void CheckPlayStatus(){
         Music.PlayMusic();
-        if(mSwitch){
+        if(Music.sSwitch){
             ((ImageButton)findViewById(R.id.play_btn)).setImageResource(R.drawable.playbtn);
             Music.PlayMusic();
-            mSwitch = false;
         }
         else{
             ((ImageButton)findViewById(R.id.play_btn)).setImageResource(R.drawable.pausebtn);
             Music.PauseMusic();
-            mSwitch = true;
         }
     }
 
