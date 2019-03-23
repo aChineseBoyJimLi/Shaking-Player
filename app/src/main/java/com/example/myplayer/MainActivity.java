@@ -10,8 +10,7 @@ import android.widget.ImageButton;
 
 public class MainActivity extends AppCompatActivity {
 
-    private boolean mSwitch = false;
-    private MediaPlayer mediaPlayer;
+    private boolean mSwitch = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,29 +20,28 @@ public class MainActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
 
+        Music.InitMusic("/storage/emulated/0/Download/lisiwushouqisi.mp3");
+        Music.PlayMusic();
+        Music.PauseMusic();
     }
 
     @Override
     protected void onDestroy(){
-        mediaPlayer.stop();
-        mediaPlayer.release();
-        mediaPlayer = null;
-
+        Music.Destroy();
         super.onDestroy();
     }
 
     public void PlayMusic(View view){
-        mediaPlayer = MediaPlayer.create(this, R.raw.happy_tree_friends);
-
-        if(!mSwitch){
-            ((ImageButton)findViewById(R.id.play_btn)).setImageResource(R.drawable.pausebtn);
-            mSwitch = true;
-            mediaPlayer.pause();
+        Music.PlayMusic();
+        if(mSwitch){
+            ((ImageButton)findViewById(R.id.play_btn)).setImageResource(R.drawable.playbtn);
+            Music.PlayMusic();
+            mSwitch = false;
         }
         else{
-            ((ImageButton)findViewById(R.id.play_btn)).setImageResource(R.drawable.playbtn);
-            mSwitch = false;
-            mediaPlayer.start();
+            ((ImageButton)findViewById(R.id.play_btn)).setImageResource(R.drawable.pausebtn);
+            Music.PauseMusic();
+            mSwitch = true;
         }
     }
 

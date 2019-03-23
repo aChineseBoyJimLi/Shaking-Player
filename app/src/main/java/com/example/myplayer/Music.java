@@ -13,27 +13,27 @@ public class Music {
     public String path;
     public int size;
 
-    public static MediaPlayer mediaPlayer;
+    public static MediaPlayer mediaPlayer = new MediaPlayer();
 
     public static boolean sSwitch = false;
 
-    public static void PlayMusic(String local){
+    public static void InitMusic(String local){
         try{
+            mediaPlayer.reset();
             mediaPlayer.setDataSource(local);
-            mediaPlayer.start();
-            if(sSwitch){
-                // 播放
-               sSwitch = false;
-            }
-            else{
-                // 暂停
-                mediaPlayer.pause();
-                sSwitch = true;
-            }
+            mediaPlayer.prepare();
         }
         catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    public static void PlayMusic(){
+        mediaPlayer.start();
+    }
+
+    public static void PauseMusic(){
+        mediaPlayer.pause();
     }
 
     public static void Destroy(){

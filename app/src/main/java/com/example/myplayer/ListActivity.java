@@ -7,10 +7,12 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,6 +58,18 @@ public class ListActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         // TODO Auto-generated method stub
+        try {
+            String local = data.get(position).get("path").toString();
+
+            Log.d("0",local);
+            Music.InitMusic(local);
+            Music.PlayMusic();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            Toast.makeText(this, "无法播放音频",
+                Toast.LENGTH_SHORT).show();
+        }
 
     }
 
@@ -69,19 +83,18 @@ public class ListActivity extends AppCompatActivity implements AdapterView.OnIte
         c.moveToFirst();
         while (c.moveToNext())
         {
-            Music m = new Music();
-            m.title = c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE));
-            m.artist = c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST));
-            m.path = c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA));
-            m.length = c.getInt(c.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION));
-            m.size = c.getInt(c.getColumnIndexOrThrow(MediaStore.Audio.Media.SIZE));
-//            musicList.add(m);
+            String title = c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE));
+            String artist = c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST));
+            String path = c.getString(c.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA));
+            int length = c.getInt(c.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION));
+            int size = c.getInt(c.getColumnIndexOrThrow(MediaStore.Audio.Media.SIZE));
             Map<String, Object> map = new HashMap<>();
             map.put("thumb", R.drawable.playbtn);
-            map.put("music", m.title);
-            map.put("artist", m.artist);
-            map.put("path", m.path);
-            map.put("time", m.length);
+            map.put("music", title);
+            map.put("artist", artist);
+            map.put("path", path);
+            map.put("time", length);
+            map.put("size", size);
             data.add(map);
         }
         c.close();
