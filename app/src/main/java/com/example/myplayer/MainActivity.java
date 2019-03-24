@@ -5,16 +5,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,12 +49,21 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
 
 
 
+
+
         String local = MainActivity.data.get(0).get("path").toString();
         String title = MainActivity.data.get(0).get("music").toString();
         String artist = MainActivity.data.get(0).get("artist").toString();
         int length = Integer.parseInt(MainActivity.data.get(0).get("time").toString());
 
         Music.InitMusic(title,artist,length,local, 0);
+
+        Music.mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                PlayNext();
+            }
+        });
         Music.sSwitch = false;
         CheckPlayStatus();
     }

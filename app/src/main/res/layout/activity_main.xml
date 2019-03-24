@@ -134,7 +134,7 @@
                 android:id="@+id/curr_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="2:23"
+                android:text="0:0"
                 android:paddingLeft="10dp"
                 android:textColor="@color/colorWhite"/>
 
