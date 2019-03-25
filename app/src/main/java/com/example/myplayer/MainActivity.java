@@ -4,6 +4,9 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.provider.MediaStore;
@@ -14,6 +17,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,10 +51,6 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
         volumneBar = findViewById(R.id.volumne);
         volumneBar.setOnSeekBarChangeListener(this);
 
-
-
-
-
         String local = MainActivity.data.get(0).get("path").toString();
         String title = MainActivity.data.get(0).get("music").toString();
         String artist = MainActivity.data.get(0).get("artist").toString();
@@ -58,14 +58,32 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
 
         Music.InitMusic(title,artist,length,local, 0);
 
+
+        Music.sSwitch = false;
+        CheckPlayStatus();
+    }
+
+
+
+    @Override
+    protected void onStart(){
         Music.mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
                 PlayNext();
             }
         });
-        Music.sSwitch = false;
-        CheckPlayStatus();
+
+        Music.mediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+            @Override
+            public boolean onError(MediaPlayer mp, int what, int extra) {
+                return true;
+            }
+        });
+
+        SensorManagerHelper sensorManagerHelper = new SensorManagerHelper(this);
+        sensorManagerHelper.setOnShakeListener(()-> PlayNext());
+        super.onStart();
     }
 
     @Override
@@ -138,7 +156,7 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
             int length = c.getInt(c.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION));
             int size = c.getInt(c.getColumnIndexOrThrow(MediaStore.Audio.Media.SIZE));
             Map<String, Object> map = new HashMap<>();
-            map.put("thumb", R.drawable.playbtn);
+            map.put("thumb", R.drawable.note);
             map.put("music", title);
             map.put("artist", artist);
             map.put("path", path);
@@ -157,7 +175,6 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
             int length = Integer.parseInt(data.get(0).get("time").toString());
             Music.InitMusic(title,artist,length,local,0);
             Music.sSwitch = true;
-            Music.PlayMusic();
         }
         else{
             int nextIndex = Music.currIndex + 1;
@@ -167,7 +184,6 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
             int length = Integer.parseInt(data.get(nextIndex).get("time").toString());
             Music.InitMusic(title,artist,length,local,nextIndex);
             Music.sSwitch = true;
-            Music.PlayMusic();
         }
         CheckPlayStatus();
     }
@@ -181,7 +197,6 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
             int length = Integer.parseInt(data.get(nextIndex).get("time").toString());
             Music.InitMusic(title,artist,length,local,nextIndex);
             Music.sSwitch = true;
-            Music.PlayMusic();
         }
         else{
             int nextIndex = Music.currIndex - 1;
@@ -191,7 +206,6 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
             int length = Integer.parseInt(data.get(nextIndex).get("time").toString());
             Music.InitMusic(title,artist,length,local,nextIndex);
             Music.sSwitch = true;
-            Music.PlayMusic();
 
         }
         CheckPlayStatus();
@@ -225,6 +239,7 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
             public void run() {
                 float p = (float)Music.mediaPlayer.getCurrentPosition() / (float)Music.length * 100.0f;
                 seekBar.setProgress((int)p);
+
 
                 int currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
                 int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
